@@ -3,6 +3,9 @@ package com.spring.boot.maibotnew.database.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "subjects")
 @Data
@@ -25,5 +28,12 @@ public class Subject {
 
     @Column(name="teacher_name")
     private String teacherName;
+
+    @OneToMany(mappedBy = "subject", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Schedule> schedules = new ArrayList<>();
+
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "subject")
+    private Exam exam;
+
 
 }

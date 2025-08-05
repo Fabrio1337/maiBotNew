@@ -22,6 +22,12 @@ public class Group {
     @Column(name="course_number")
     private byte courseNumber;
 
+    @OneToOne(cascade=CascadeType.ALL, mappedBy = "group")
+    private Holiday holiday;
+
+    @OneToMany(mappedBy = "group",  cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Exam> exams = new ArrayList<>();
+
     @OneToMany(mappedBy = "group",  cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<User> users = new ArrayList<>();
 
