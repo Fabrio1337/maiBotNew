@@ -34,4 +34,7 @@ public class Group {
     @OneToMany(mappedBy = "group",  cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Subject> subjects = new ArrayList<>();
 
+    @OneToMany(mappedBy = "group",  cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Alert> alerts = new ArrayList<>();
+
 }

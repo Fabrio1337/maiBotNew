@@ -32,6 +32,12 @@ public class Subject {
     @OneToMany(mappedBy = "subject", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Schedule> schedules = new ArrayList<>();
 
+    @OneToMany(mappedBy = "subject", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Material> materials = new ArrayList<>();
+
+    @OneToMany(mappedBy = "subject", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Homework> homeworks = new ArrayList<>();
+
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "subject")
     private Exam exam;
 
