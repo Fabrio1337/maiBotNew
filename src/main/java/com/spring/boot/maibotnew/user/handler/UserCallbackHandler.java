@@ -6,7 +6,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 public interface UserCallbackHandler {
     void handle(Update update);
-    void handleUserTextMessage(User user, Message message);
+    void handleUserTextMessage(User user, Message message, User userFromTelegram);
     void sendWelcomeMessage(User user);
     void sendHelpMessage(User user);
     void sendMainMenuMessage(User user);

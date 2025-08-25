@@ -15,7 +15,8 @@ public class Holiday {
     @Column(name = "id")
     private int id;
 
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "holiday")
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "group_id")
     private Group group;
 
     @Column(name = "start_date")

@@ -1,8 +1,10 @@
 package com.spring.boot.maibotnew.user.handler;
 
 import com.spring.boot.maibotnew.admin.handler.AdminHandler;
+import com.spring.boot.maibotnew.bot.executor.TelegramBotExecutor;
 import com.spring.boot.maibotnew.database.entity.User;
 import com.spring.boot.maibotnew.database.registry.RepositoryRegistry;
+import com.spring.boot.maibotnew.user.messages.Main.MainMessagesInterface;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,27 +25,48 @@ public class UserHandler implements UserCallbackHandler {
     @Autowired
     private AdminHandler adminHandler;
 
+    @Autowired
+    private MainMessagesInterface mainMessages;
+
     @Override
     public void handle(Update update) {
+
         if(update.hasMessage() && update.getMessage().hasText()) {
-            long chatId = update.getMessage().getChatId();
-            User user = repositoryRegistry.getUserService().findOrCreate(chatId);
-            if(user.isAdmin()) {
+
+            org.telegram.telegrambots.meta.api.objects.User userFromTelegram = update.getMessage().getFrom();
+
+            User userFromTg = new User();
+            userFromTg.setTelegramId(userFromTelegram.getId());
+            userFromTg.setUsername(userFromTelegram.getUserName());
+            userFromTg.setFirstName(userFromTelegram.getFirstName());
+            userFromTg.setLastName(userFromTelegram.getLastName());
+
+            User user = repositoryRegistry.getUserService()
+                    .getUserRepository()
+                    .findUserByTelegramId(userFromTelegram.getId())
+                    .orElse(null);
+            if(user != null && user.isAdmin()) {
                 adminHandler.handle(update);
             }
             else {
-                handleUserTextMessage(user, update.getMessage());
+                handleUserTextMessage(user, update.getMessage(), userFromTg);
             }
         }
     }
 
     @Override
-    public void handleUserTextMessage(User user, Message message) {
+    public void handleUserTextMessage(User user, Message message, User userFromTg) {
 
 
         switch(message.getText()) {
             case "/start":
-                sendWelcomeMessage(user);
+                if(user == null)
+                {
+                    repositoryRegistry.getUserService().getUserRepository().save(userFromTg);
+                    sendWelcomeMessage(userFromTg);
+
+                }
+                else sendMainMenuMessage(user);
                 break;
             case "/help":
                 sendHelpMessage(user);
@@ -56,6 +79,7 @@ public class UserHandler implements UserCallbackHandler {
 
     @Override
     public void sendWelcomeMessage(User user) {
+        mainMessages.sendWelcomeMessage(user);
 
     }
 
@@ -66,6 +90,6 @@ public class UserHandler implements UserCallbackHandler {
 
     @Override
     public void sendMainMenuMessage(User user) {
-
+        mainMessages.sendMainMenuMessage(user);
     }
 }

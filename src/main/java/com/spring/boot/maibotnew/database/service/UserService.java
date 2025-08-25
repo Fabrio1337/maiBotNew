@@ -16,12 +16,15 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    public User findOrCreate(long chatId)
+    public User findOrCreate(long chatId, String username, String firstName, String lastName)
     {
         return userRepository.findUserByTelegramId(chatId)
                 .orElseGet(() -> {
                     User newUser = new User();
                     newUser.setTelegramId(chatId);
+                    newUser.setUsername(username);
+                    newUser.setFirstName(firstName);
+                    newUser.setLastName(lastName);
                     return userRepository.save(newUser);
                 });
     }

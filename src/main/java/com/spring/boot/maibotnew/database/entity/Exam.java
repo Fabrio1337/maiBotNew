@@ -20,7 +20,8 @@ public class Exam {
     @JoinColumn(name="group_id")
     private Group group;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "exam")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "subject_id") // FK к таблице subjects
     private Subject subject;
 
     @Column(name = "exam_date")
